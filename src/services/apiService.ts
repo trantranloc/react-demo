@@ -1,13 +1,14 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {  AxiosRequestConfig, AxiosResponse } from "axios";
 
-const api: AxiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api",
-  withCredentials: true,
+
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api', 
   timeout: 60000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");

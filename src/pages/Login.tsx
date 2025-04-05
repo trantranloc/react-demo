@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
 
 const Login: React.FC = () => {
-    const [username, setUsername] = useState('');
+    const [, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null); // Lưu trữ lỗi
     const [loading, setLoading] = useState(false); // Trạng thái loading
@@ -11,7 +11,7 @@ const Login: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (!username || !password) {
+        if (!name || !password) {
             setError('Username and Password are required');
             return;
         }
@@ -20,8 +20,8 @@ const Login: React.FC = () => {
         setError(null); 
 
         try {
-            console.log(username, password);
-            const response = await login(username, password);
+            console.log(name, password);
+            const response = await login(name, password);
             console.log("Responsive",response)
             if (response.token) {
                 navigate('/users');
@@ -50,7 +50,7 @@ const Login: React.FC = () => {
                             name="username"
                             className="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="Enter your username"
-                            value={username}
+                            value={name}
                             onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
