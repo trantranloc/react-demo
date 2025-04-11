@@ -1,14 +1,15 @@
-import axios, {  AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
 
-
+// Tạo instance API
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api', 
+  baseURL: "http://localhost:8080/api/v1",
   timeout: 60000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
+// Thêm interceptor tự động gắn token vào request
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
@@ -17,68 +18,6 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    // Xử lý lỗi trong request nếu có
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
-
-// Hàm gửi GET request
-export const get = async (
-  url: string,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse> => {
-  try {
-    const response = await api.get(url, config);
-    return response;
-  } catch (error) {
-    console.error("GET request failed:", error);
-    throw error;
-  }
-};
-
-// Hàm gửi POST request
-export const post = async (
-  url: string,
-  data: any,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse> => {
-  try {
-    const response = await api.post(url, data, config);
-    return response;
-  } catch (error) {
-    console.error("POST request failed:", error);
-    throw error;
-  }
-};
-
-// Hàm gửi PUT request
-export const put = async (
-  url: string,
-  data: any,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse> => {
-  try {
-    const response = await api.put(url, data, config);
-    return response;
-  } catch (error) {
-    console.error("PUT request failed:", error);
-    throw error;
-  }
-};
-
-// Hàm gửi DELETE request
-export const del = async (
-  url: string,
-  config?: AxiosRequestConfig
-): Promise<AxiosResponse> => {
-  try {
-    const response = await api.delete(url, config);
-    return response;
-  } catch (error) {
-    console.error("DELETE request failed:", error);
-    throw error;
-  }
-};
-
 export default api;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Register: React.FC = () => {
     return (
@@ -57,9 +58,9 @@ const Register: React.FC = () => {
                     <div className="text-center mt-4 text-sm">
                         <p className="text-gray-600">
                             Already have an account?{' '}
-                            <a href="/login" className="text-blue-600 hover:underline">
+                            <Link to="/login" className="text-blue-600 hover:underline">
                                 Login here
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </form>

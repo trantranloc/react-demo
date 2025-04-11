@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { fetchUserById, User } from '../../services/userService';
 
 const UserDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const [user, setUser] = useState<User | null>(null);
 
-    // Giả sử bạn gọi API hoặc dùng mock data để lấy thông tin người dùng.
-    const user = { id, username: `User ${id}`, email: `${id}@example.com`, fullName: `Full Name ${id}` };
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                if (id) {
+                    const res = await fetchUserById(id);
+                    setUser(res.result); // lấy đúng result
+                }
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        };
+
+        getUser();
+    }, [id]);
 
     return (
         <div className="p-8 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
@@ -14,15 +28,15 @@ const UserDetail: React.FC = () => {
             <div className="space-y-4">
                 <div className="flex items-center">
                     <span className="w-32 font-medium text-gray-700">Username:</span>
-                    <span className="text-gray-800">{user.username}</span>
+                    <span className="text-gray-800">{user?.lastName}</span>
                 </div>
                 <div className="flex items-center">
                     <span className="w-32 font-medium text-gray-700">Full Name:</span>
-                    <span className="text-gray-800">{user.fullName}</span>
+                    <span className="text-gray-800">{user?.firstName}</span>
                 </div>
                 <div className="flex items-center">
                     <span className="w-32 font-medium text-gray-700">Email:</span>
-                    <span className="text-gray-800">{user.email}</span>
+                    <span className="text-gray-800">{user?.email}</span>
                 </div>
             </div>
 

@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchAllUsers } from "../../services/userService";
-
-interface Role {
-    id: string;
-    role: string;
-}
-
-interface User {
-    id: string;
-    username: string;
-    email: string | null;
-    phone: string | null;
-    address: string | null;
-    roles: Role[];
-}
+import { fetchAllUsers, User } from "../../services/userService";
 
 const ListUser: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -22,8 +8,9 @@ const ListUser: React.FC = () => {
 
     useEffect(() => {
         const fetchUsers = async () => {
-              const token = localStorage.getItem("authToken"); // Retrieve token from localStorage
-            console.log(token)
+            const token = localStorage.getItem("authToken");
+            console.log("Token:", token);
+
             try {
                 const data = await fetchAllUsers();
                 setUsers(data);
@@ -37,57 +24,72 @@ const ListUser: React.FC = () => {
         fetchUsers();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
-    return (
-        <div className="p-8 bg-white rounded-lg shadow-md">
-            <h1 className="text-2xl font-semibold text-gray-800 mb-6">User List</h1>
+    if (loading) return (
+        <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+    );
 
-            {/* Thêm người dùng */}
-            <div className="mb-6 flex justify-end">
-                <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                    Add New User
-                </button>
+    return (
+        <div className="container mx-auto p-6">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold text-gray-800">User List</h2>
+                <Link
+                    to="/users/add"
+                    className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
+                >
+                    Add User
+                </Link>
             </div>
 
-            {/* Bảng danh sách người dùng */}
-            <div className="overflow-x-auto">
-                <table className="min-w-full table-auto bg-gray-50 rounded-lg shadow-md">
-                    <thead>
-                        <tr className="bg-blue-600 text-white">
-                            <th className="px-6 py-3 text-left text-sm font-medium">Username</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium">Email</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium">Phone</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium">Roles</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium">Actions</th>
+            <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+                <table className="min-w-full">
+                    <thead className="bg-gray-100">
+                        <tr>
+                            <th className="py-3 px-6 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                #
+                            </th>
+                            <th className="py-3 px-6 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                Username
+                            </th>
+                            <th className="py-3 px-6 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                Email
+                            </th>
+                            <th className="py-3 px-6 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
-                            <tr key={user.id} className="border-b hover:bg-gray-100">
-                                <td className="px-6 py-4 text-sm text-gray-800">{user.username}</td>
-                                <td className="px-6 py-4 text-sm text-gray-800">{user.email || "N/A"}</td>
-                                <td className="px-6 py-4 text-sm text-gray-800">{user.phone || "N/A"}</td>
-                                <td className="px-6 py-4 text-sm text-gray-800">
-                                    {user.roles.map((r) => r.role).join(", ")}
-                                </td>
-                                <td className="px-6 py-4 text-sm text-gray-800">
+                        {users.map((user, index) => (
+                            <tr key={user.id} className="border-b hover:bg-gray-50">
+                                <td className="py-4 px-6">{index + 1}</td>
+                                <td className="py-4 px-6">{user.firstName}</td>
+                                <td className="py-4 px-6">{user.email}</td>
+                                <td className="py-4 px-6">
                                     <div className="flex space-x-2">
                                         <Link
-                                            to={`/user/${user.id}`}
-                                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
+                                            to={`/users/edit/${user.id}`}
+                                            className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md text-sm transition duration-300"
                                         >
-                                            View
-                                        </Link>
-                                        <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200">
                                             Edit
-                                        </button>
-                                        <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200">
+                                        </Link>
+                                        <button
+                                            className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm transition duration-300"
+                                        >
                                             Delete
                                         </button>
                                     </div>
                                 </td>
                             </tr>
                         ))}
+                        {users.length === 0 && (
+                            <tr>
+                                <td colSpan={4} className="text-center py-6 text-gray-500">
+                                    No users found.
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

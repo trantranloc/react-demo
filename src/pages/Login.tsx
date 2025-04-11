@@ -3,26 +3,27 @@ import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
 
 const Login: React.FC = () => {
-    const [, setUsername] = useState('');
+    // const [username, setUsername] = useState('');
+    const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(null); // Lưu trữ lỗi
-    const [loading, setLoading] = useState(false); // Trạng thái loading
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (!name || !password) {
+        if (!email || !password) {
             setError('Username and Password are required');
             return;
         }
 
-        setLoading(true); 
-        setError(null); 
+        setLoading(true);
+        setError(null);
 
         try {
-            console.log(name, password);
-            const response = await login(name, password);
-            console.log("Responsive",response)
+            console.log(email, password);
+            const response = await login(email, password);
+            console.log("Responsive", response)
             if (response.token) {
                 navigate('/users');
             } else {
@@ -31,7 +32,7 @@ const Login: React.FC = () => {
         } catch (error) {
             setError('Login failed. Please try again.');
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }
 
@@ -50,8 +51,8 @@ const Login: React.FC = () => {
                             name="username"
                             className="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="Enter your username"
-                            value={name}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
