@@ -4,21 +4,14 @@ export interface Role {
   name: string;
 }
 
-export interface Address {
-  id: string;
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-}
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  username: string;
   active: boolean;
-  address: Address[];
+  password: string;
+  phone: string;
+  address: string;
   roles: Role[];
 }
 
@@ -29,7 +22,11 @@ export const fetchAllUsers = async () => {
     throw new Error("No auth token found");
   }
   try {
-    const response = await api.get("/users");
+    const response = await api.get("/users", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.result;
   } catch (error: any) {
     console.error("Error fetching users:", error);
@@ -39,7 +36,11 @@ export const fetchAllUsers = async () => {
 
 export const fetchUserById = async (id: string) => {
   try {
-    const response = await api.get(`/users/${id}`);
+    const response = await api.get(`/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+    });
     return response.data.result;
   } catch (error: any) {
     console.error("Error fetching user:", error);
@@ -59,10 +60,30 @@ export const updateUser = async (id: string, userData: any) => {
 
 export const createUser = async (userData: any) => {
   try {
-    const response = await api.post("/users", userData);
+    console.log("Creating user with data:", userData);
+    const token = localStorage.getItem("authToken");
+    const response = await api.post("/users", userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error: any) {
     console.error("Error creating user:", error);
     throw new Error("Failed to create user");
+  }
+};
+export const deleteUser = async (id: string) => {
+  try {
+    console.log("Deleting user with ID:", id);
+    const token = localStorage.getItem("authToken");
+    await api.delete(`/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error: any) {
+    console.error("Error deleting user:", error);
+    throw new Error("Failed to delete user");
   }
 };

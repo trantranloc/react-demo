@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
 
 const Login: React.FC = () => {
-    // const [username, setUsername] = useState('');
-    const [email, setEmail] = useState(''); 
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -13,7 +12,7 @@ const Login: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!email || !password) {
-            setError('Username and Password are required');
+            setError('Email and Password are required');
             return;
         }
 
@@ -21,16 +20,12 @@ const Login: React.FC = () => {
         setError(null);
 
         try {
-            console.log(email, password);
             const response = await login(email, password);
-            console.log("Responsive", response)
-            if (response.token) {
-                navigate('/users');
-            } else {
-                setError('Invalid username or password');
-            }
-        } catch (error) {
-            setError('Login failed. Please try again.');
+            console.log("Response", response);
+            
+            navigate('/users');
+        } catch (error: any) {
+            setError(error.message || 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -41,21 +36,20 @@ const Login: React.FC = () => {
             <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Welcome Back</h1>
                 <form className="space-y-6" method="post" onSubmit={handleSubmit}>
-                    {/* Username */}
+                    {/* Email */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
-                            Username
+                            Email
                         </label>
                         <input
-                            type="text"
-                            name="username"
+                            type="email"
+                            name="email"
                             className="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Enter your username"
+                            placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-
                     {/* Password */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
@@ -82,7 +76,7 @@ const Login: React.FC = () => {
                     <button
                         type="submit"
                         className="w-full px-4 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300"
-                        disabled={loading} // Vô hiệu hóa nút khi đang loading
+                        disabled={loading}
                     >
                         {loading ? 'Logging in...' : 'Login'}
                     </button>
